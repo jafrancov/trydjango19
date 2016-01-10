@@ -1,4 +1,5 @@
 from django.shortcuts import render, HttpResponse
+from .models import Post
 
 
 def post_create(request):
@@ -13,7 +14,9 @@ def post_detail(request):  # retrieve
 
 
 def post_list(request):  # list items
+    queryset = Post.objects.all()
     context = {
+        'object_list': queryset,
         'title': 'List'
     }
     # if request.user.is_authenticated():
@@ -24,7 +27,6 @@ def post_list(request):  # list items
     #     context = {
     #         'title': 'List'
     #     }
-
     return render(request, 'index.html', context)
 
 
