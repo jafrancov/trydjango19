@@ -4,3 +4,4 @@
 */migrations/
 *.pyc
 crud.md
+static/pro
