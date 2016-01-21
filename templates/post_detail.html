@@ -11,15 +11,21 @@
         {% if instance.user.get_full_name %}
         <p>Author: {{ instance.user.get_full_name }}</p>
         {% endif %}
+        <p><div class="fb-like" data-href="{{ request.build_absolute_uri }}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div></p>
         {% if instance.image %}
-        <img src="{{ instance.image.url }}" class="img-responsive" />
+        <p><img src="{{ instance.image.url }}" class="img-responsive" /></p>
         {% endif %}
-
-        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank">Facebook</a>
+        <hr/>
+        {% comment %}<a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank">Facebook</a>
         <a href="https://twitter.com/home?status={{ instace.title | urlfy }}%20{{ request.build_absolute_uri }}" target="_blank">Twitter</a>
         <a href='https://plus.google.com/share?url={{ request.build_absolute_uri }}' target="_blank">Google+</a>
         <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ instance.title | urlfy }}&summary=Test&source={{ request.build_absolute_uri }}" target="_blank">Linkedin</a>
-        <a href="http://www.reddit.com/submit?url={{ request.build_absolute_uri }}/&title={{ instance.title | urlfy }}" target="_blank">Reddit</a>
-        {{ instance.content|linebreaks }}<br/>
+        <a href="http://www.reddit.com/submit?url={{ request.build_absolute_uri }}/&title={{ instance.title | urlfy }}" target="_blank">Reddit</a>{% endcomment %}
+        <div class="row">
+            <div class="col-sm-12">
+                {{ instance.content|linebreaks }}<hr/>
+            </div>
+        </div>
+        <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
     </div>
 {% endblock content %}
