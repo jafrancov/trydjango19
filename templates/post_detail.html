@@ -23,7 +23,8 @@
         <a href="http://www.reddit.com/submit?url={{ request.build_absolute_uri }}/&title={{ instance.title | urlfy }}" target="_blank">Reddit</a>{% endcomment %}
         <div class="row">
             <div class="col-sm-12">
-                {{ instance.content|linebreaks }}<hr/>
+                <div class="content-markdown">{{ instance.content }}</div>
+                <hr/>
             </div>
         </div>
         <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
