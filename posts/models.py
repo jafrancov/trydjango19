@@ -5,11 +5,15 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models.signals import pre_save
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 
 
-# Post.object.all() OR Post.object.create(user=user, title="some title")
+from markdown_deux import markdown
+
+
 class PostManager(models.Manager):
+    # Post.object.all() OR Post.object.create(user=user, title="some title")
     # This class overwrite the Post.object.all() call
     def active(self, *args, **kwargs):
         return super(PostManager, self).filter(draft=False).filter(publish__lte=timezone.now())
@@ -51,6 +55,10 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-timestamp', '-updated']
+
+    def get_markdown(self):
+        content = self.content
+        return mark_safe(markdown(content))
 
 
 def create_slug(instance, new_slug=None):
