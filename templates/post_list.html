@@ -30,7 +30,7 @@
                         <img src="{{ obj.image.url }}" class="img-responsive" />
                         {% endif %}
                         <hr/>
-                        {{ obj.get_markdown }}
+                        {{ obj.get_markdown|truncatewords:50 }}
                         <p><a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a></p>
                     </div>
                 </div>
