@@ -29,9 +29,11 @@
         </div>
     <p class="lead">Comments</p>
         <div class="">
-            {% for comment in comments %}
-                {{ comment.content }}<br/>
-                <small>Via {{ comment.user }} | {{ comment.timestamp|timesince }} ago</small>
+            {% for comment in instance.comments %}
+                <blockquote>
+                    <p>{{ comment.content }}</p>
+                <footer>Via {{ comment.user }} | {{ comment.timestamp|timesince }} ago</footer>
+                </blockquote>
                 <hr/>
             {% endfor %}
         </div>

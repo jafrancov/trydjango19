@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.contrib import messages
-from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseRedirect, Http404
 from django.db.models import Q
@@ -35,14 +34,13 @@ def post_detail(request, slug=None):  # retrieve
         if not request.user.is_staff or not request.user.is_superuser:
             raise Http404
     share_string = quote_plus(instance.title)
-    content_type = ContentType.objects.get_for_model(Post)
-    obj_id = instance.id
-    comments = Comment.objects.filter(content_type=content_type, object_id=obj_id)
+    # comments = Comment.objects.filter_by_instance(instance)
+    # comments = instance.comments
     context = {
         'title': 'Detail',
         'instance': instance,
         'share_string': share_string,
-        'comments': comments,
+        # 'comments': comments,
     }
     return render(request, 'post_detail.html', context)
 
