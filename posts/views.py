@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 from django.contrib import messages
+from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from urllib import quote_plus
 
+from comments.forms import CommentForm
 from comments.models import Comment
 from .forms import PostForm
 from .models import Post
@@ -36,11 +39,29 @@ def post_detail(request, slug=None):  # retrieve
     share_string = quote_plus(instance.title)
     # comments = Comment.objects.filter_by_instance(instance)
     # comments = instance.comments
+    initial_data = {
+        'content_type': instance.get_content_type,
+        'object_id': instance.id,
+    }
+    form = CommentForm(request.POST or None, initial=initial_data)
+    if form.is_valid():
+        c_type = form.cleaned_data.get('content_type')
+        content_type = ContentType.objects.get(model=c_type)
+        obj_id = form.cleaned_data.get('object_id')
+        content_data = form.cleaned_data.get('content')
+        new_comment, created = Comment.objects.get_or_create(
+            user=request.user,
+            content_type=content_type,
+            object_id=obj_id,
+            content=content_data
+        )
+        return HttpResponseRedirect(reverse('posts:detail', kwargs={'slug':slug}))
     context = {
         'title': 'Detail',
         'instance': instance,
         'share_string': share_string,
         # 'comments': comments,
+        'form': form,
     }
     return render(request, 'post_detail.html', context)
 
