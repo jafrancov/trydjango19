@@ -37,10 +37,15 @@
 
         <div class="">
             {% for comment in instance.comments %}
-                <blockquote>
-                    <p>{{ comment.content }}</p>
-                <footer>Via {{ comment.user }} | {{ comment.timestamp|timesince }} ago</footer>
+            <blockquote>
+                <p>{{ comment.content }}</p>
+                <footer>
+                    Via {{ comment.user }} | {{ comment.timestamp|timesince }} ago
+                    {% if comment.children.count > 0 %} | {{ comment.children.count }} Comment{% if comment.children.count > 1 %}s{% endif %}{% endif %}
+                    | <a class="comment-reply-btn" href="#">Reply</a>
+                </footer>
 
+            <div class="comment-reply">
                 {% for child_comment in comment.children %}
                     <blockquote>
                         <p>{{ child_comment.content }}</p>
@@ -53,8 +58,9 @@
                     <input type="hidden" name="parent_id" value="{{ comment.pk }}">
                     <button type="submit" class="btn btn-default">Reply</button>
                 </form>
-                </blockquote>
-                <hr/>
+            </div>
+            </blockquote>
+            <hr/>
             {% endfor %}
         </div>
 {#        <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>#}

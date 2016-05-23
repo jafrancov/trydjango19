@@ -7,3 +7,7 @@ h1 {
     margin-left: 0px !important;
     width: 100% !important;
 }
+
+.comment-reply {
+    display: none;
+}
