@@ -60,11 +60,13 @@
     var contentItem = $("#id_content");
 
     function setContent(value) {
-        var markedContent = marked(value);
-        $("#preview-content").html(markedContent);
-        $("#preview-content img").each(function () {
-            $(this).addClass("img-responsive")
-        });
+        if (value) {
+            var markedContent = marked(value);
+            $("#preview-content").html(markedContent);
+            $("#preview-content img").each(function () {
+                $(this).addClass("img-responsive")
+            });
+        }
     }
     setContent(contentItem.val());
 
