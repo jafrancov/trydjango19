@@ -1,7 +1,10 @@
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from rest_framework.serializers import ModelSerializer, HyperlinkedIdentityField, SerializerMethodField, ValidationError
 
 from comments.models import Comment
+
+User = get_user_model()
 
 
 def create_comment_serializer(model_type='post', slug=None, parent_id=None):
@@ -31,6 +34,18 @@ def create_comment_serializer(model_type='post', slug=None, parent_id=None):
             obj_qs = SomeModel.objects.filter(slug = self.slug)
             if not obj_qs.exists() or obj_qs.count() != 1:
                 raise ValidationError("This is not a slug for this content type. ")
+
+        def create(self, validated_data):
+            content = validated_data.get('content')
+            user = User.objects.all().first()
+            model_type = self.model_type
+            slug = self.slug
+            parent_obj = self.parent_obj
+            comment = Comment.objects.create_by_modeltype(
+                model_type, slug, content, user,
+                parent_obj=parent_obj,
+            )
+            return comment
 
     return CommentCreateSerializer
 
