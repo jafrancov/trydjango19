@@ -18,12 +18,12 @@ class CommentManager(models.Manager):
         qs = super(CommentManager, self).filter(content_type=content_type, object_id=obj_id).filter(parent=None)
         return qs
 
-    def create_by_modeltype(self, model_type, slug, content, user, parent_obj=None):
+    def create_by_model_type(self, model_type, slug, content, user, parent_obj=None):
         model_qs = ContentType.objects.filter(model=model_type)
-        if not model_qs.exists():
+        if model_qs.exists():
             SomeModel = model_qs.first().model_class()
-            obj_qs = SomeModel.objects.filter(slug=self.slug)
-            if not obj_qs.exists() or obj_qs.count() != 1:
+            obj_qs = SomeModel.objects.filter(slug=slug)
+            if not obj_qs.exists() or obj_qs.count() == 1:
                 instance = self.model()
                 instance.content = content
                 instance.user = user
