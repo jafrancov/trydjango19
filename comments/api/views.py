@@ -23,7 +23,7 @@ from comments.models import Comment
 
 
 from .serializers import (
-    CommentSerializer, CommentDetailSerializer,
+    CommentListSerializer, CommentDetailSerializer,
     create_comment_serializer)
 
 
@@ -73,7 +73,7 @@ class CommentDetailAPIView(DestroyModelMixin, UpdateModelMixin, RetrieveAPIView)
 
 
 class CommentListAPIView(ListAPIView):
-    serializer_class = CommentSerializer
+    serializer_class = CommentListSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['title', 'content', 'user__first_name', 'user__last_name']
 
@@ -81,7 +81,7 @@ class CommentListAPIView(ListAPIView):
 
     def get_queryset(self, *args, **kwargs):
         # queryset_list = super(PostListAPIView, self).get_queryset(*args, **kwargs)
-        queryset_list = Comment.objects.all()
+        queryset_list = Comment.objects.filter(id__gte=0)
         query = self.request.GET.get("q")
         if query:
             queryset_list = queryset_list.filter(
