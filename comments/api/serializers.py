@@ -100,6 +100,12 @@ class CommentDetailSerializer(ModelSerializer):
             'replies',
             'timestamp',
         ]
+        read_only_fields = [
+            'object_id',
+            'content_type',
+            'reply_count',
+            'replies',
+        ]
 
     def get_reply_count(self, obj):
         if obj.is_parent:
@@ -111,13 +117,3 @@ class CommentDetailSerializer(ModelSerializer):
             return CommentChildSerializer(obj.children(), many=True).data
         else:
             return None
-
-
-class CommentEditSerializer(ModelSerializer):
-    class Meta:
-        model = Comment
-        fields = [
-            'id',
-            'content',
-            'timestamp',
-        ]
