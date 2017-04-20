@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 from rest_framework.serializers import (
     ModelSerializer,
     EmailField,
@@ -69,8 +70,8 @@ class UserCreateSerializer(ModelSerializer):
 
 class UserLoginSerializer(ModelSerializer):
     token = CharField(allow_blank=True, read_only=True)
-    username = CharField()
-    email = EmailField(label='Email address')
+    username = CharField(required=False, allow_blank=True)
+    email = EmailField(label='Email address', required=False, allow_blank=True)
 
     class Meta:
         model = User
@@ -85,7 +86,27 @@ class UserLoginSerializer(ModelSerializer):
                         }
 
     def validate(self, data):
-        # email = data['email']
+        user_obj = None
+        email = data.get('email', None)
+        username = data.get('username', None)
+        print username
+        password = data['password']
+        if not email and not username:
+            raise ValidationError('Username or email is required to login.')
+        user = User.objects.filter(
+            Q(email=email) |
+            Q(username=username)
+        ).distinct()
+        user = user.exclude(email__isnull=True).exclude(email__iexact='')
+        if user.exists() and user.count() == 1:
+            user_obj = user.first()
+        else:
+            raise ValidationError('This username/email is not valid.')
+        if user_obj:
+            if not user_obj.check_password(password):
+                raise ValidationError('Incorrect credentials please try again.')
+        data['token'] = 'SOME RANDOM TOKEN'
+
         # user_qs = User.objects.filter(email=email)
         # if user_qs.exists():
         #     raise ValidationError('This user has already registered.')
