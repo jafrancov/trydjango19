@@ -56,7 +56,7 @@ class PostDeleteAPIView(DestroyAPIView):
 
 
 class PostListAPIView(ListAPIView):
-    permission_classes = [AllowAny]
+    # permission_classes = [AllowAny]
     serializer_class = PostListSerializer
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['title', 'content', 'user__first_name', 'user__last_name']
